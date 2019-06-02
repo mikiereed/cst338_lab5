@@ -1,10 +1,13 @@
 
-import java.awt.GridBagLayout;
+package assig5;
+
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.*;
 
 public class CardTable extends JFrame
 {
@@ -47,9 +50,15 @@ public class CardTable extends JFrame
 		pnlPlayArea = new JPanel( new GridLayout(2, 2) );
 		pnlHumanHand = new JPanel( new GridLayout(1, numCardsPerHand) );
 		
-		this.add( pnlComputerHand );
-		this.add( pnlPlayArea );
-		this.add( pnlHumanHand );
+		setLayout( new BorderLayout(20, 10));
+		
+		this.add( pnlComputerHand, BorderLayout.NORTH );
+		this.add( pnlPlayArea, BorderLayout.CENTER );
+		this.add( pnlHumanHand, BorderLayout.SOUTH );
+		
+		pnlComputerHand.setBorder( new TitledBorder("Computer Hand") );
+		pnlPlayArea.setBorder( new TitledBorder("Playing Area") );
+		pnlHumanHand.setBorder( new TitledBorder("Your Hand") );
 	}
 	
 	// Accessors for the two instance members

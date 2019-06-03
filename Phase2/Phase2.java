@@ -7,7 +7,7 @@
  * CST 338 - Module 4: Optical Barcode
  */
 
-package assig5;
+package Assig5;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -15,41 +15,41 @@ import javax.swing.border.*;
 
 public class Phase2
 {
-	static CardTable myCardTable;
-	static CardGameFramework highCardGame;
-	static Hand[] cardStacks = new Hand[2];
-	static int NUM_CARDS_PER_HAND = 7;
-	static int NUM_PLAYERS = 2;
-	static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
-	static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];  
-	static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
-	static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
-	
-	/**
-	 * returns a new random card for the main to use in its tests.
-	 * @return newCard
-	 */
-	public static Card generateRandomCard()
-	{
-		char value;
-		Card.Suit suit;
-		int suitRand, valueRand;
-		
-		suitRand = (int)(Math.random() * 4);
-		valueRand = (int)(Math.random() * 14);
-		
-		suit = Card.suitRanks[suitRand];
-		value = Card.valuRanks[valueRand];
-		
-		Card newCard = new Card( value, suit );
-		return newCard;
-		
-	}
-	
-	public static void main( String[] args )
-	{
-		
-		GUICard.loadCardIcons();
+   static CardTable myCardTable;
+   static CardGameFramework highCardGame;
+   static Hand[] cardStacks = new Hand[2];
+   static int NUM_CARDS_PER_HAND = 7;
+   static int NUM_PLAYERS = 2;
+   static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
+   static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];  
+   static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
+   static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
+   
+   /**
+    * returns a new random card for the main to use in its tests.
+    * @return newCard
+    */
+   public static Card generateRandomCard()
+   {
+      char value;
+      Card.Suit suit;
+      int suitRand, valueRand;
+      
+      suitRand = (int) Math.ceil(Math.random() * 4);
+      valueRand = (int) Math.ceil(Math.random() * 14);
+      
+      suit = Card.suitRanks[suitRand];
+      value = Card.valuRanks[valueRand];
+      
+      Card newCard = new Card( value, suit );
+      return newCard;
+      
+   }
+   
+   public static void main( String[] args )
+   {
+      
+      GUICard.loadCardIcons();
 
         // Create CardGameFramework
         int numPacksPerDeck = 1;
@@ -81,7 +81,7 @@ public class Phase2
 
         buildPanels();
         
-	}
+   }
         
     public static void buildPanels()
     {
@@ -100,10 +100,10 @@ public class Phase2
             for ( k = 0; k < NUM_PLAYERS; k++ )
             {
                 if( k == 0 )
-                	playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
+                  playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
                 
                 if( k == 1 )
-                	playLabelText[k] = new JLabel("You", JLabel.CENTER);
+                  playLabelText[k] = new JLabel("You", JLabel.CENTER);
                 
             }
 
@@ -117,14 +117,14 @@ public class Phase2
             // and two random cards in the play region (simulating a computer/hum ply)
             for( k = 0; k < NUM_PLAYERS; k++ )
             {
-            	playedCardLabels[k] = new JLabel( GUICard.getIcon(
-            			generateRandomCard()) );
+               playedCardLabels[k] = new JLabel( GUICard.getIcon(
+                     generateRandomCard()) );
             }
             
             // adding cards to the play area panel
             for( k = 0; k < NUM_PLAYERS; k++ )
             {
-            	myCardTable.pnlPlayArea.add(playedCardLabels[k]);
+               myCardTable.pnlPlayArea.add(playedCardLabels[k]);
             }
             
             // adding lables to the PA panel under the cards
@@ -136,6 +136,6 @@ public class Phase2
 
         }
 
-	    
+       
 
 }

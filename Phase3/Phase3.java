@@ -1,4 +1,5 @@
 /* Team 1
+
  * Austin Ah Loo
  * Ramon Lucindo
  * Mikie Reed
@@ -7,6 +8,7 @@
  * CST 338 - Module 5: GUI Cards
  * 
  *  */
+package Assig5;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -170,8 +172,8 @@ public class Phase3
       Card.Suit suit;
       int suitRand, valueRand;
       
-      suitRand = (int)(Math.random() * 4);
-      valueRand = (int)(Math.random() * 14);
+      suitRand = (int) Math.ceil(Math.random() * 4);
+      valueRand = (int) Math.ceil(Math.random() * 14);
       
       suit = Card.suitRanks[suitRand];
       value = Card.valuRanks[valueRand];

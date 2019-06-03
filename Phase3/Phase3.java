@@ -47,39 +47,115 @@ public class Phase3
       int numJokersPerPack = 0;
       int numUnusedCardsPerPack = 0;
       Card[] unusedCardsPerPack = null;
+      
+      int k;
+      Icon tempIcon;
 
       /**
        * CardFramework object to leverage the dealing of cards to the GUI
        * display
        */
       
-       highCardGame = new CardGameFramework(numPacksPerDeck,
+      highCardGame = new CardGameFramework(numPacksPerDeck,
               numJokersPerPack, numUnusedCardsPerPack, unusedCardsPerPack,
               NUM_PLAYERS, NUM_CARDS_PER_HAND);
-
       
       highCardGame.deal();
       cardStacks[0] = new Hand();
       cardStacks[1] = new Hand();
       
-
-      myCardTable
-              = new CardTable("CardTable", NUM_CARDS_PER_HAND, NUM_PLAYERS);
+      myCardTable = new CardTable("CardTable", NUM_CARDS_PER_HAND, NUM_PLAYERS);
       myCardTable.setSize(800, 600);
       myCardTable.setLocationRelativeTo(null);
       myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       //adding buttons
-      JButton endButton = new JButton("Quit");
-      EndingListener buttonEar = new EndingListener();
-      endButton.addActionListener(buttonEar);
+      //JButton endButton = new JButton("Quit");
+      //EndingListener buttonEar = new EndingListener();
+      //endButton.addActionListener(buttonEar);
       //myCardTable.add(endButton);
-      
       
       myCardTable.setVisible(true);
       
-      buildPanels();
+      // CREATE LABELS ----------------------------------------------------
+      for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
+      {
+         computerLabels[k] = new JLabel(GUICard.getBackCardIcon());
+              
+         tempIcon = GUICard.getIcon(highCardGame.getHand(1).inspectCard(k));
+            
+         humanLabels[k] = new JLabel(tempIcon);
+      }
 
+      for ( k = 0; k < NUM_PLAYERS; k++ )
+      {
+         if( k == 0 )
+            playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
+         
+         if( k == 1 )
+            playLabelText[k] = new JLabel("You", JLabel.CENTER);
+               
+       }
+
+      // ADD LABELS TO PANELS -----------------------------------------
+      for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
+      {
+         myCardTable.pnlComputerHand.add(computerLabels[k]);
+         myCardTable.pnlHumanHand.add(new JButton(new AbstractAction("",
+                                                   humanLabels[k].getIcon())
+            {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                  System.out.println("Select card and add to 'humanLabels' "
+                        + "JLabel... Somehow");
+            }
+         }));       
+      }
+      
+      //add button below each card in your hand
+      //add listener to each button
+      //based off of the card selected, add it to playedCardLabels
+      
+      //After all players have chosen their cards, call another method that
+      //will select a card for the computer
+      
+      // and two random cards in the play region (simulating a computer/hum ply)
+      for( k = 0; k < NUM_PLAYERS; k++ )
+      {
+         playedCardLabels[k] = new JLabel( GUICard.getIcon(
+               generateRandomCard()) );
+      }
+           
+      // adding cards to the play area panel
+      for( k = 0; k < NUM_PLAYERS; k++ )
+      {
+         myCardTable.pnlPlayArea.add(playedCardLabels[k]);
+         myCardTable.setVisible(true);
+      }
+           
+      // adding labels to the PA panel under the cards
+      myCardTable.pnlPlayArea.add(playLabelText[0]);
+      myCardTable.pnlPlayArea.add(playLabelText[1]);
+      
+      // show everything to the user
+      myCardTable.setVisible(true);
    }
+   
+   public class CardButtonPress implements ActionListener
+   {
+      @Override
+      public void actionPerformed(ActionEvent arg0)
+      {
+         System.out.println("Hello World!");
+      }
+   }
+   
+   public void actionPerformed(ActionEvent e)
+   {
+      
+   }
+   
+   //private static 
+   
    public static class EndingListener implements ActionListener
    {
       public void actionPerformed(ActionEvent e)
@@ -103,7 +179,7 @@ public class Phase3
       Card newCard = new Card( value, suit );
       return newCard;
    }
-
+/*
    public static void buildPanels()
    {
       int k;
@@ -156,6 +232,7 @@ public class Phase3
       myCardTable.setVisible(true);
       
    }
+*/
    public static class Card
    {
       private static final char DEFAULT_VALUE = 'A';

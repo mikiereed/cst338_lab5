@@ -172,8 +172,8 @@ public class Phase3
       Card.Suit suit;
       int suitRand, valueRand;
       
-      suitRand = (int) Math.ceil(Math.random() * 4);
-      valueRand = (int) Math.ceil(Math.random() * 14);
+      suitRand = (int)(Math.random() * 4);
+      valueRand = (int)(Math.random() * 14);
       
       suit = Card.suitRanks[suitRand];
       value = Card.valuRanks[valueRand];

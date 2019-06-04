@@ -226,17 +226,23 @@ public class Card
     
     public static int suitAsInt( Card card )
 	{	
-		switch( card.getSuit() )
-		{
-			case clubs:
-				return 0;
-			case diamonds:
-				return 1;
-			case hearts:
-				return 2;
-			default:
-				return 3;
-		}
+	    // handles nullPointerExepction when card becomes invalid
+		if(card.getSuit() != null) 
+          {
+             switch( card.getSuit() )
+             {
+                case clubs:
+                   return 0;
+                case diamonds:
+                   return 1;
+                case hearts:
+                   return 2;
+                default:
+                   return 3;
+             }
+          }
+          else
+             return 0;
 	}
     
     public static void swapCards( Card[] array, int card1, int card2 )

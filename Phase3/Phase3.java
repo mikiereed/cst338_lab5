@@ -21,14 +21,15 @@ public class Phase3
    static CardTable myCardTable;
    static CardGameFramework highCardGame;
    static Hand[] cardStacks = new Hand[2];
-   static int NUM_CARDS_PER_HAND = 7;
-   static int NUM_PLAYERS = 2;
+   static final int NUM_CARDS_PER_HAND = 7;
+   static final int NUM_PLAYERS = 2;
    static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
    static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];  
    static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
    static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
    static Card[] winnings = new Card[cardStacks.length * 52];
-   static int NUM_TIMES_WON = 0;
+   static int numTimesWon = 0;
+   static boolean readyToPlayCard = true;
    
    // static for the card icons and their corresponding labels
    static final char[] CARD_NUMBERS = new char[]
@@ -99,9 +100,11 @@ public class Phase3
          myCardTable.pnlHumanHand.add(new CardButton(humanLabels[k].getIcon()));
       }
      
-      // adding labels to the PA panel under the cards
+      /*// adding labels to the PA panel under the cards
       myCardTable.pnlPlayArea.add(playLabelText[0]);
       myCardTable.pnlPlayArea.add(playLabelText[1]);
+      */
+      resetPlayArea();
       
       // show everything to the user
       myCardTable.repaint();
@@ -198,20 +201,45 @@ public class Phase3
       return tempCard;
    }
    
-   private static void removeCardFromComputerHand()
+   private static void removePlayedCardsFromHands()
    {
       Card tempCard = getCardFromPlayer(0);
       JLabel tempLabel;
-      String labelName = "";
+      String handLabelName = "", playedLabelName = "";
+      //for the computer's hand
       for (int i = 0; i < myCardTable.pnlComputerHand.getComponentCount(); i++)
       {
          tempLabel = (JLabel)myCardTable.pnlComputerHand.getComponent(i);
-         labelName = tempLabel.getIcon().toString();
-         //compare the computer's hand icon image with the icon name of
-         //the card they chose. If they match, remove that component
+         handLabelName = tempLabel.getIcon().toString();
+         playedLabelName = playedCardLabels[0].getIcon().toString();
+         if (handLabelName == playedLabelName)
+         {
+            myCardTable.pnlComputerHand.remove(i);
+         }
+      }
+      
+      CardButton tempButton;
+      //for the player's hand
+      for (int i = 0; i < myCardTable.pnlHumanHand.getComponentCount(); i++)
+      {
+         tempButton = (CardButton)myCardTable.pnlHumanHand.getComponent(i);
+         handLabelName = tempButton.getIcon().toString();
+         playedLabelName = playedCardLabels[1].getIcon().toString();
+         if (handLabelName == playedLabelName)
+         {
+            myCardTable.pnlHumanHand.remove(i);
+         }
       }
    }
 
+   private static void resetPlayArea()
+   {
+      myCardTable.pnlPlayArea.removeAll();
+   // adding labels to the PA panel under the cards
+      myCardTable.pnlPlayArea.add(playLabelText[0]);
+      myCardTable.pnlPlayArea.add(playLabelText[1]);
+   }
+   
    private static void roundEndDisplay()
    {
       //determine winner via determineRoundWinner()
@@ -224,6 +252,11 @@ public class Phase3
             {
                myCardTable.pnlMsgArea.removeAll();
                myCardTable.repaint();
+               //reset play area for next round
+               resetPlayArea();
+               //now that the reset button has been pressed, card buttons can
+               //be pressed again
+               readyToPlayCard = true;
             }
          });
       myCardTable.pnlMsgArea.add(roundEndLabel);
@@ -240,23 +273,27 @@ public class Phase3
       @Override
       public void actionPerformed(ActionEvent e)
       {
-         JButton source = (JButton)e.getSource();
-         playedCardLabels[1] = new JLabel(source.getIcon());
-         selectComputerCard();
-         addCardsToTable();
-         roundEndDisplay();
-         //add both cards to winnings if user won
-         if (didHumanWin() == 1)
+         if (readyToPlayCard == true)
          {
-            winnings[NUM_TIMES_WON] = getCardFromPlayer(0);
-            winnings[NUM_TIMES_WON + 1] = getCardFromPlayer(1);
-            NUM_TIMES_WON += 2;
+            JButton source = (JButton)e.getSource();
+            playedCardLabels[1] = new JLabel(source.getIcon());
+            selectComputerCard();
+            addCardsToTable();
+            roundEndDisplay();
+            //add both cards to winnings if user won
+            if (didHumanWin() == 1)
+            {
+               winnings[numTimesWon] = getCardFromPlayer(0);
+               winnings[numTimesWon + 1] = getCardFromPlayer(1);
+               numTimesWon += 2;
+            }
+            removePlayedCardsFromHands();
+            //myCardTable.repaint();
+            myCardTable.setVisible(true);
+            //now that a card has just been played, change the flag so that
+            //subsequent button presses do nothing
+            readyToPlayCard = false;
          }
-         removeCardFromComputerHand();
-         //myCardTable.pnlComputerHand.remove();
-         
-         //remove label and button from hands
-         myCardTable.setVisible(true);
       }
    }
    /*

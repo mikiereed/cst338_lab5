@@ -1,3 +1,4 @@
+﻿
 /* Team 1
 
  * Austin Ah Loo
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.*;
+
 
 public class Phase3
 {
@@ -419,6 +421,17 @@ public class Phase3
           this.set(DEFAULT_VALUE, DEFAULT_SUIT); // default
        }
        
+       /**
+        * Constructor for Card with only errorFlag argument
+        * Mainly used if errorFlag needs to be set
+        * Sets value = DEFAULT_VALUE, Suit = DEFAULT_SUIT
+        *
+        */
+       public Card( boolean errorFlag )
+       {
+          this.set(DEFAULT_VALUE, DEFAULT_SUIT); // default
+          this.errorFlag = errorFlag;
+       }
        
        /**
         * Constructor for Card
@@ -506,7 +519,7 @@ public class Phase3
         */
        public boolean equals(Card card)
        {
-    	   if (this.value == card.getValue() && this.suit == card.getSuit() && this.errorFlag == card.getErrorFlag())
+           if (value == card.getValue() && suit == card.getSuit())
            {
                return true;
            }
@@ -677,17 +690,13 @@ public class Phase3
 
        /**
         * returns and removes the card in the top occupied position of the array
-        * if no cards, then create and return bad card
         * 
         * @return Card cardToPlay
         */
        public Card playCard()
        {
-    	  if(this.numCards == 0)
-    		  return new Card('S', Card.Suit.spades);
-    	  
-          this.numCards--;
-          return myCards[this.numCards];
+         this.numCards--;
+           return myCards[this.numCards];
        }
        
        /**
@@ -751,7 +760,7 @@ public class Phase3
 
        /**
         * Accessor for an individual card
-        * Returns a new bad card with errorFlag = true if k is bad
+        * Returns a card with errorFlag = true if k is bad
         * 
         * @return String entireHand
         */
@@ -760,8 +769,7 @@ public class Phase3
           if (k >= numCards)
           {
              // make card with errorFlag = true
-             //Card badCard = new Card(true);
-        	 Card badCard = new Card('S', Card.Suit.hearts);
+             Card badCard = new Card(true);
              return badCard;
           }
           return myCards[k];
@@ -787,13 +795,13 @@ public class Phase3
       private static Icon[][] iconCards = new ImageIcon[14][4];
       
       private static Icon iconBack;
-      static boolean iconsLoaded = false;
+      private static boolean iconsLoaded = false;
       
       /*
        * loadCardIcons method similar to Phase 1, but storing the Icons in a 2-D array
        * Doesn't require the client to call this method. 
        */
-      static void loadCardIcons()
+      public static void loadCardIcons()
       {
          /*
           * Build the file names in a loop such as AC.gif, 2C.gif, TC.gif, etc.
@@ -818,7 +826,7 @@ public class Phase3
       }
       
       // converts int to card value (0 - 14 --> "A", "2",..., "Q", "K", etc)
-      static String turnIntIntoCardValue( int j )
+      public static String turnIntIntoCardValue( int j )
       {
          String[] cardValues = 
             {"A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K",
@@ -831,7 +839,7 @@ public class Phase3
       }
       
       // converts int to card suits ("D", "C", "H", "S")
-      static String turnIntIntoCardSuit( int k )
+      public static String turnIntIntoCardSuit( int k )
       {
          String[] suites = {"C", "D", "H", "S"};
          
@@ -861,8 +869,8 @@ public class Phase3
        * for the JPanels, the organization of which depends on how many cards and
        * players will be displayed.
        */
-      static final int MAX_CARDS_PER_HAND = 56;
-      static final int MAX_PLAYERS = 2;  //for now, we only allow 2 person games
+      public static final int MAX_CARDS_PER_HAND = 56;
+      public static final int MAX_PLAYERS = 2;  //for now, we only allow 2 person games
          
       private int numCardsPerHand;
       private int numPlayers;
@@ -1054,7 +1062,7 @@ public class Phase3
        return enoughCards;
     }
 
-    void sortHands()
+    public void sortHands()
     {
        int k;
 
@@ -1062,7 +1070,7 @@ public class Phase3
           hand[k].sort();
     }
 
-    Card playCard(int playerIndex, int cardIndex)
+    public Card playCard(int playerIndex, int cardIndex)
     {
        // returns bad card if either argument is bad
        if (playerIndex < 0 ||  playerIndex > numPlayers - 1 ||
@@ -1078,7 +1086,7 @@ public class Phase3
     }
 
 
-    boolean takeCard(int playerIndex)
+    public boolean takeCard(int playerIndex)
     {
        // returns false if either argument is bad
        if (playerIndex < 0 || playerIndex > numPlayers - 1)
@@ -1096,7 +1104,7 @@ public class Phase3
    {
 
       /** Define a public final int value like MAX_CARDS, and initialize it to 
-      * allow a maximum of six packs (6×56 cards).
+      * allow a maximum of six packs (6Ã—56 cards).
       */
       public final int MAX_CARDS = 312; // max 6 decks of 56 cards
          

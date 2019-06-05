@@ -7,7 +7,6 @@
  * CST 338 Module 5 - Phase 2
  */
 
-package assig5;
 import java.util.Arrays;
 import java.util.Random;
 import java.awt.GridLayout;

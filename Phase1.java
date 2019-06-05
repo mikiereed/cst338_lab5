@@ -8,7 +8,6 @@
  * Phase 1
  */
 
-package assig5;
 
 import java.awt.FlowLayout;
 

@@ -1,3 +1,5 @@
+package assig5;
+
 /* Team 1
 
  * Austin Ah Loo
@@ -106,8 +108,9 @@ public class Phase3
       */
       resetPlayArea();
       
-      // show everything to the user
+      // show everything to the user 
       myCardTable.repaint();
+      myCardTable.setVisible(true);
    }
    
    private static void addCardsToTable()

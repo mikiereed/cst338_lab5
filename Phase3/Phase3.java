@@ -8,7 +8,6 @@
  * CST 338 - Module 5: GUI Cards
  * 
  *  */
-package Assig5;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +27,8 @@ public class Phase3
    static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];  
    static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
    static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
-   
+   static Card[] winnings = new Card[cardStacks.length * 52];
+   static int NUM_TIMES_WON = 0;
    
    // static for the card icons and their corresponding labels
    static final char[] CARD_NUMBERS = new char[]
@@ -67,15 +67,9 @@ public class Phase3
       cardStacks[1] = new Hand();
       
       myCardTable = new CardTable("CardTable", NUM_CARDS_PER_HAND, NUM_PLAYERS);
-      myCardTable.setSize(800, 600);
+      myCardTable.setSize(800, 800);
       myCardTable.setLocationRelativeTo(null);
-      myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      //adding buttons
-      //JButton endButton = new JButton("Quit");
-      //EndingListener buttonEar = new EndingListener();
-      //endButton.addActionListener(buttonEar);
-      //myCardTable.add(endButton);
-      
+      myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
       myCardTable.setVisible(true);
       
       // CREATE LABELS ----------------------------------------------------
@@ -98,66 +92,174 @@ public class Phase3
                
        }
 
-      // ADD LABELS TO PANELS -----------------------------------------
+      // ADD LABELS AND BUTTONS TO PANELS -----------------------------------------
       for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
       {
          myCardTable.pnlComputerHand.add(computerLabels[k]);
-         myCardTable.pnlHumanHand.add(new JButton(new AbstractAction("",
-                                                   humanLabels[k].getIcon())
-            {
-               @Override
-               public void actionPerformed(ActionEvent e) {
-                  System.out.println("Select card and add to 'humanLabels' "
-                        + "JLabel... Somehow");
-            }
-         }));       
+         myCardTable.pnlHumanHand.add(new CardButton(humanLabels[k].getIcon()));
       }
-      
-      //add button below each card in your hand
-      //add listener to each button
-      //based off of the card selected, add it to playedCardLabels
-      
-      //After all players have chosen their cards, call another method that
-      //will select a card for the computer
-      
-      // and two random cards in the play region (simulating a computer/hum ply)
-      for( k = 0; k < NUM_PLAYERS; k++ )
-      {
-         playedCardLabels[k] = new JLabel( GUICard.getIcon(
-               generateRandomCard()) );
-      }
-           
-      // adding cards to the play area panel
-      for( k = 0; k < NUM_PLAYERS; k++ )
-      {
-         myCardTable.pnlPlayArea.add(playedCardLabels[k]);
-         myCardTable.setVisible(true);
-      }
-           
+     
       // adding labels to the PA panel under the cards
       myCardTable.pnlPlayArea.add(playLabelText[0]);
       myCardTable.pnlPlayArea.add(playLabelText[1]);
       
       // show everything to the user
-      myCardTable.setVisible(true);
+      myCardTable.repaint();
    }
    
-   public class CardButtonPress implements ActionListener
+   private static void addCardsToTable()
    {
-      @Override
-      public void actionPerformed(ActionEvent arg0)
+      //if there are no panels currently on the frame, then add some
+      if (myCardTable.pnlPlayArea.getComponents().length <= NUM_PLAYERS)
       {
-         System.out.println("Hello World!");
+         // adding cards to the play area panel
+         for(int k = 0; k < NUM_PLAYERS; k++ )
+         {
+            myCardTable.pnlPlayArea.add(playedCardLabels[k]);
+            myCardTable.repaint();
+         }
       }
    }
    
-   public void actionPerformed(ActionEvent e)
+   private static void selectComputerCard()
    {
+      //this needs logic made to shift from generateRandomCard() to selecting
+      //a card from the computer hand and adding it to playedCardLabels[0]
+      playedCardLabels[0] = new JLabel(GUICard.getIcon(generateRandomCard()));
+   }
+   
+   private static int didHumanWin()
+   {
+      //-1: computer wins
+      //0: tie
+      //1: human win
+      Card computerCard = getCardFromPlayer(0);
+      Card humanCard = getCardFromPlayer(1);
+      
+      int valueOfComputerCard = Card.valueAsInt(computerCard);
+      int valueOfHumanCard = Card.valueAsInt(humanCard);
+      
+      if (valueOfHumanCard == valueOfComputerCard)
+      {
+         return 0;
+      }
+      else if (valueOfHumanCard > valueOfComputerCard)
+      {
+         return 1;
+      }
+      else
+      {
+         return -1;
+      }
+   }
+   
+   private static String getWinMessage()
+   {
+      int winStatus = didHumanWin();
+      
+      switch (winStatus)
+      {
+         case -1: return "Computer Wins!";
+         case 0: return "Tie!";
+         case 1: return "You Win!";
+         default: return "NO WINNER - ERROR";
+      }
       
    }
    
-   //private static 
+   private static Card getCardFromPlayer(int playerIndex)
+   {
+      //playerIndex 0 will be computer 1 will be human
+      String cardString = playedCardLabels[playerIndex].getIcon().toString();
+      cardString = cardString.substring(cardString.indexOf('/') + 1);
+      Card tempCard = getCardFromFilename(cardString);
+      return tempCard;
+   }
    
+   private static Card getCardFromFilename(String filename)
+   {
+      char suitChar = filename.charAt(1);
+      char valueChar = filename.charAt(0);
+      Card tempCard = new Card();
+      switch (suitChar)
+      {
+         case 'C': tempCard.suit = Card.Suit.clubs;
+            break; 
+         case 'D': tempCard.suit = Card.Suit.diamonds;
+            break;
+         case 'H': tempCard.suit = Card.Suit.hearts;
+            break;
+         case 'S': tempCard.suit = Card.Suit.spades;
+            break;
+         default: tempCard.suit = Card.Suit.spades;
+            break;
+      }
+      tempCard.value = valueChar;
+      return tempCard;
+   }
+   
+   private static void removeCardFromComputerHand()
+   {
+      Card tempCard = getCardFromPlayer(0);
+      JLabel tempLabel;
+      String labelName = "";
+      for (int i = 0; i < myCardTable.pnlComputerHand.getComponentCount(); i++)
+      {
+         tempLabel = (JLabel)myCardTable.pnlComputerHand.getComponent(i);
+         labelName = tempLabel.getIcon().toString();
+         //compare the computer's hand icon image with the icon name of
+         //the card they chose. If they match, remove that component
+      }
+   }
+
+   private static void roundEndDisplay()
+   {
+      //determine winner via determineRoundWinner()
+      JLabel roundEndLabel = new JLabel(getWinMessage());
+      JButton nextRoundBtn = new JButton("Click for next round");
+      nextRoundBtn.addActionListener(new ActionListener()
+         {
+            @Override
+            public void actionPerformed(ActionEvent arg0)
+            {
+               myCardTable.pnlMsgArea.removeAll();
+               myCardTable.repaint();
+            }
+         });
+      myCardTable.pnlMsgArea.add(roundEndLabel);
+      myCardTable.pnlMsgArea.add(nextRoundBtn);
+   }
+   
+   public static class CardButton extends JButton implements ActionListener
+   {
+      public CardButton(Icon icon)
+      {
+         super(icon);
+         addActionListener(this);
+      }
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+         JButton source = (JButton)e.getSource();
+         playedCardLabels[1] = new JLabel(source.getIcon());
+         selectComputerCard();
+         addCardsToTable();
+         roundEndDisplay();
+         //add both cards to winnings if user won
+         if (didHumanWin() == 1)
+         {
+            winnings[NUM_TIMES_WON] = getCardFromPlayer(0);
+            winnings[NUM_TIMES_WON + 1] = getCardFromPlayer(1);
+            NUM_TIMES_WON += 2;
+         }
+         removeCardFromComputerHand();
+         //myCardTable.pnlComputerHand.remove();
+         
+         //remove label and button from hands
+         myCardTable.setVisible(true);
+      }
+   }
+   /*
    public static class EndingListener implements ActionListener
    {
       public void actionPerformed(ActionEvent e)
@@ -165,7 +267,7 @@ public class Phase3
          System.exit(0);
       }
    }
-   
+   */
    public static Card generateRandomCard()
    {
       char value;
@@ -252,7 +354,7 @@ public class Phase3
        private boolean errorFlag;
        
        public static char[] valuRanks = 
-         { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X' };
+         {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X'};
        
        public static Suit[] suitRanks = 
          { Suit.clubs, Suit.diamonds, Suit.hearts, Suit.spades };
@@ -486,7 +588,6 @@ public class Phase3
          array[card1] = array[card2];
          array[card2] = temp;
       }
-      
    }
    public static class Hand
    {
@@ -677,7 +778,8 @@ public class Phase3
       static String turnIntIntoCardValue( int j )
       {
          String[] cardValues = 
-            { "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "X" };
+            {"A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K",
+                  "X"};
          
          if( j >= 0 && j <= 13 )
             return cardValues[j];
@@ -688,7 +790,7 @@ public class Phase3
       // converts int to card suits ("D", "C", "H", "S")
       static String turnIntIntoCardSuit( int k )
       {
-         String[] suites = { "C", "D", "H", "S" };
+         String[] suites = {"C", "D", "H", "S"};
          
          if( k >= 0 && k <= 3 )
             return suites[k];
@@ -717,12 +819,13 @@ public class Phase3
        * players will be displayed.
        */
       static final int MAX_CARDS_PER_HAND = 56;
-      static final int MAX_PLAYERS = 2;  // for now, we only allow 2 person games
+      static final int MAX_PLAYERS = 2;  //for now, we only allow 2 person games
          
       private int numCardsPerHand;
       private int numPlayers;
       
-      public JPanel pnlComputerHand, pnlHumanHand, pnlPlayArea;
+      public JPanel pnlComputerHand, pnlHumanHand, pnlPlayArea, pnlMsgArea,
+                     pnlCenterArea;
       
       /*
        * The constructor filters input, adds any panels to the JFrame, and 
@@ -747,13 +850,19 @@ public class Phase3
           * computer-top) and a middle "playing" JPanel. 
           */
          pnlComputerHand = new JPanel( new GridLayout(1, numCardsPerHand) );
-         pnlPlayArea = new JPanel( new GridLayout(2, 2) );
          pnlHumanHand = new JPanel( new GridLayout(1, numCardsPerHand) );
+         
+         pnlCenterArea = new JPanel( new GridLayout(2, 1) );
+         pnlPlayArea = new JPanel( new GridLayout(2, 2) );
+         pnlMsgArea = new JPanel();
          
          setLayout( new BorderLayout(20, 10));
          
          this.add( pnlComputerHand, BorderLayout.NORTH );
-         this.add( pnlPlayArea, BorderLayout.CENTER );
+         //this.add( pnlPlayArea, BorderLayout.CENTER );
+         pnlCenterArea.add(pnlPlayArea);
+         pnlCenterArea.add(pnlMsgArea);
+         this.add( pnlCenterArea, BorderLayout.CENTER );
          this.add( pnlHumanHand, BorderLayout.SOUTH );
          
          pnlComputerHand.setBorder( new TitledBorder("Computer Hand") );

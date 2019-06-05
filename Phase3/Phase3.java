@@ -319,22 +319,6 @@ public class Phase3
       }
    }
 
-   public static Card generateRandomCard()
-   {
-      char value;
-      Card.Suit suit;
-      int suitRand, valueRand;
-      
-      suitRand = (int)(Math.random() * 4);
-      valueRand = (int)(Math.random() * 14);
-      
-      suit = Card.suitRanks[suitRand];
-      value = Card.valuRanks[valueRand];
-      
-      Card newCard = new Card( value, suit );
-      return newCard;
-   }
-
    public static class Card
    {
       private static final char DEFAULT_VALUE = 'A';

@@ -68,8 +68,10 @@ public class Phase3
       myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
       myCardTable.setVisible(true);
       
+      //The computer and player hands will be built up from highCardGame hands
       buildHands();
       
+      //Create labels for computer and player
       for (k = 0; k < NUM_PLAYERS; k++)
       {
          if(k == 0)
@@ -78,7 +80,8 @@ public class Phase3
          if(k == 1)
             playLabelText[k] = new JLabel("You", JLabel.CENTER);    
        }
-
+      
+      //Call helper method to put the playLabelText onto the myCardTable
       resetPlayArea();
       
       // show everything to the user 
@@ -88,29 +91,32 @@ public class Phase3
    
    private static void buildHands()
    {
+      /**
+       * Generate the JLabels (for computer) and JButtons (for player)
+       * based off of the hands stored in highGameCard and add them to 
+       * myCardTable to be visible.
+       */
       myCardTable.pnlComputerHand.removeAll();
       myCardTable.pnlHumanHand.removeAll();
       Icon tempIcon;
-      // CREATE LABELS ADD THEM TO myCardTable for computer-----------------
+      // Create labels and add them to myCardTable for computer-----------------
       for (int k = 0; k < highCardGame.getHand(0).getNumCards(); k++)
       {
          if (k < highCardGame.getHand(0).getNumCards())
          {
             computerLabels[k] = new JLabel(GUICard.getBackCardIcon());
          }
-         
          myCardTable.pnlComputerHand.add(computerLabels[k]);
       }
       
-      // CREATE LABELS ADD THEM TO myCardTable for human-----------------
+      // Create labels and add them to myCardTable for human-----------------
       for (int k = 0; k < highCardGame.getHand(1).getNumCards(); k++)
       {
          if (k < highCardGame.getHand(1).getNumCards())
          {
             tempIcon = GUICard.getIcon(highCardGame.getHand(1)
-                                                         .inspectCard(k));
+                                                   .inspectCard(k));
             humanLabels[k] = new JButton(tempIcon);
-            
             myCardTable.pnlHumanHand.add(new CardButton(humanLabels[k]
                                                                .getIcon()));
          }           
@@ -120,6 +126,10 @@ public class Phase3
    
    private static void addCardsToTable()
    {
+      /**
+       * For both computer and player, add the chosen cards (stored in 
+       * playedCardLabels) to the myCardTable middle JPanel
+       */
       //if there are no panels currently on the frame, then add some
       if (myCardTable.pnlPlayArea.getComponents().length <= NUM_PLAYERS)
       {
@@ -127,7 +137,6 @@ public class Phase3
          for(int k = 0; k < NUM_PLAYERS; k++ )
          {
             myCardTable.pnlPlayArea.add(playedCardLabels[k]);
-            //highCardGame.hand[k].playCard(cardIndex);
             myCardTable.repaint();
          }
       }
@@ -135,6 +144,11 @@ public class Phase3
    
    private static void selectComputerCard()
    {
+      /**
+       * Generate the choice of card (from the computer's hand) for the
+       * computer based off of the value of the card in the hand. The computer
+       * will always choose the highest value of card in the hand.
+       */
       Hand computerHand = highCardGame.getHand(0);
       Card tempCard;
       int highestValueIndex = -1;
@@ -155,9 +169,10 @@ public class Phase3
    
    private static int didHumanWin()
    {
-      //-1: computer wins
-      //0: tie
-      //1: human win
+      /**
+       * Determine if human or computer won the game. Return -1 if computer,
+       * 0 if tie, and 1 if player.
+       */
       Card computerCard = getCardFromPlayer(0);
       Card humanCard = getCardFromPlayer(1);
       
@@ -180,6 +195,10 @@ public class Phase3
    
    private static String getWinMessage()
    {
+      /**
+       * Based off of the results of didHumanWin() method, return an
+       * Appropriate message to be displayed in a JLabel later.
+       */
       int winStatus = didHumanWin();
       
       switch (winStatus)
@@ -193,7 +212,11 @@ public class Phase3
    
    private static Card getCardFromPlayer(int playerIndex)
    {
-      //playerIndex 0 will be computer 1 will be human
+      /**
+       * When provided a player number (0 for computer, 1 or more for player)
+       * this will return the card that the entity had most recently chosen
+       * to play.
+       */
       String cardString = playedCardLabels[playerIndex].getIcon().toString();
       cardString = cardString.substring(cardString.indexOf('/') + 1);
       Card tempCard = getCardFromFilename(cardString);
@@ -202,6 +225,13 @@ public class Phase3
    
    private static Card getCardFromFilename(String filename)
    {
+      /**
+       * When provided the filename of an icon for a card image, this function
+       * will return a card instance that has the same suit and value.
+       * Note: The filename be in a standard format and must not have a folder
+       * listed before it. The first two characters must be like "A8", where
+       * "A" is the suit, and "8" is the value of the card.
+       */
       char suitChar = filename.charAt(1);
       char valueChar = filename.charAt(0);
       Card tempCard = new Card();
@@ -224,6 +254,11 @@ public class Phase3
    
    private static int getIndexOfCardInHand(int playerIndex, Card card)
    {
+      /**
+       * When provided with both the player index and a card object, this will
+       * return the index of the equivalent card (card with same suit and value)
+       * that resides in the hand of that entity.
+       */
       Hand tempHand = highCardGame.getHand(playerIndex);
       Card tempCard;
       for (int i = 0; i < tempHand.getNumCards(); i++)
@@ -239,6 +274,12 @@ public class Phase3
    
    private static void removePlayedCardsFromHands()
    {
+      /**
+       * This method will gather the most recently played card from previously
+       * defined methods and will play card using Hand.playCard() method.
+       * Then will call buildHands() which will reconstruct the JLabels
+       * and JButtons in the myCardTable JPanels.
+       */
       //find the index of the card in the hand, then remove it via playCard()
       Card tempCard = getCardFromPlayer(0);
       int cardInHandIndex = getIndexOfCardInHand(0, tempCard);
@@ -255,6 +296,11 @@ public class Phase3
 
    private static void resetPlayArea()
    {
+      /**
+       * This is responsible for clearing and preparing the play area of 
+       * myCardTable for the next round of cards. This will clear and then 
+       * re-write JLabels back into the main play area. 
+       */
       myCardTable.pnlPlayArea.removeAll();
       // adding labels to the PA panel under the cards
       myCardTable.pnlPlayArea.add(playLabelText[0]);
@@ -263,6 +309,14 @@ public class Phase3
    
    private static void roundEndDisplay()
    {
+      /**
+       * When the round has ended (signaled by the selection of cards by
+       * all players), generate a win/lose/tie message and paste it along side
+       * a JButton that allows the player to advance to the next round.
+       * This method also comes with an anonymous action listener attached
+       * to the JButton. When the JButton is pressed, the message JPanel
+       * is cleared out, play area is reset and hands are rebuilt.
+       */
       //determine winner via determineRoundWinner()
       JLabel roundEndLabel = new JLabel(getWinMessage());
       JButton nextRoundBtn = new JButton("Click for next round");
@@ -286,6 +340,15 @@ public class Phase3
    }
    
    @SuppressWarnings("serial")
+   /**
+    * Class CardButton is a typical JButton that has a defined ActionLister.
+    * These buttons are designed to hold card icons are clickable by the player
+    * when a selection has been made. Upon selection, multiple actions occur
+    * that drive the game forward such as selecting computer card, adding cards
+    * to the main play area and removing the cards from all of the hands.
+    * @author mitch
+    *
+    */
    public static class CardButton extends JButton implements ActionListener
    {
       public CardButton(Icon icon)
@@ -298,10 +361,14 @@ public class Phase3
       {
          if (readyToPlayCard == true)
          {
+            //create JLabel from the JButton clicked and add to playedCardLabels
             JButton source = (JButton)e.getSource();
-            playedCardLabels[1] = new JLabel(source.getIcon());  
+            playedCardLabels[1] = new JLabel(source.getIcon());
+            //Choose computer card based off of computer hand
             selectComputerCard();
+            //add all selections to main play area
             addCardsToTable();
+            //display winner message and button to advance
             roundEndDisplay();
             //add both cards to winnings if user won
             if (didHumanWin() == 1)
@@ -310,6 +377,7 @@ public class Phase3
                winnings[numTimesWon + 1] = getCardFromPlayer(1);
                numTimesWon += 2;
             }
+            //remove chosen cards out of computer an player's hands
             removePlayedCardsFromHands();
             myCardTable.setVisible(true);
             //now that a card has just been played, change the flag so that
@@ -317,6 +385,22 @@ public class Phase3
             readyToPlayCard = false;
          }
       }
+   }
+
+   public static Card generateRandomCard()
+   {
+      char value;
+      Card.Suit suit;
+      int suitRand, valueRand;
+      
+      suitRand = (int)(Math.random() * 4);
+      valueRand = (int)(Math.random() * 14);
+      
+      suit = Card.suitRanks[suitRand];
+      value = Card.valuRanks[valueRand];
+      
+      Card newCard = new Card( value, suit );
+      return newCard;
    }
 
    public static class Card

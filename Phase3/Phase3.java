@@ -22,7 +22,6 @@ public class Phase3
    public static CardGameFramework highCardGame;
    public static final int NUM_CARDS_PER_HAND = 7;
    public static final int NUM_PLAYERS = 2;
-   //public static Hand[] cardStacks;// = new Hand[NUM_PLAYERS];
    public static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
    public static JButton[] humanLabels = new JButton[NUM_CARDS_PER_HAND];
    public static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS];
@@ -33,9 +32,9 @@ public class Phase3
    
    // static for the card icons and their corresponding labels
    public static final char[] CARD_NUMBERS = new char[]
-   { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X' };
+   {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X'};
    public static final char[] SUITS = new char[]
-   { 'C', 'D', 'H', 'S' };
+   {'C', 'D', 'H', 'S'};
    public static final int NUM_CARD_IMAGES = (CARD_NUMBERS.length *
          SUITS.length) + 1;
    // + 1 for back card
@@ -52,7 +51,6 @@ public class Phase3
       Card[] unusedCardsPerPack = null;
       
       int k;
-      //Icon tempIcon;
 
       /**
        * CardFramework object to leverage the dealing of cards to the GUI
@@ -64,9 +62,6 @@ public class Phase3
               NUM_PLAYERS, NUM_CARDS_PER_HAND);
       
       highCardGame.deal();
-      //cardStacks[0] = new Hand();
-      //cardStacks[1] = new Hand();
-      
       myCardTable = new CardTable("CardTable", NUM_CARDS_PER_HAND, NUM_PLAYERS);
       myCardTable.setSize(800, 800);
       myCardTable.setLocationRelativeTo(null);
@@ -75,12 +70,12 @@ public class Phase3
       
       buildHands();
       
-      for ( k = 0; k < NUM_PLAYERS; k++ )
+      for (k = 0; k < NUM_PLAYERS; k++)
       {
-         if( k == 0 )
+         if(k == 0)
             playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
          
-         if( k == 1 )
+         if(k == 1)
             playLabelText[k] = new JLabel("You", JLabel.CENTER);    
        }
 
@@ -256,70 +251,7 @@ public class Phase3
       buildHands();
       myCardTable.repaint();
       myCardTable.setVisible(true);
-      
-      /*
-      JLabel tempLabel;
-      String handLabelName = "", playedLabelName = "";
-      //for the computer's hand
-      
-      
-      for (int i = 0; i < myCardTable.pnlComputerHand.getComponentCount(); i++)
-      {
-         tempLabel = (JLabel)myCardTable.pnlComputerHand.getComponent(i);
-         handLabelName = tempLabel.getIcon().toString();
-         playedLabelName = playedCardLabels[0].getIcon().toString();
-         if (handLabelName == playedLabelName)
-         {
-            myCardTable.pnlComputerHand.remove(i);
-         }
-         
-      }
-      
-      CardButton tempButton;
-      //for the player's hand
-      for (int i = 0; i < myCardTable.pnlHumanHand.getComponentCount(); i++)
-      {
-         tempButton = (CardButton)myCardTable.pnlHumanHand.getComponent(i);
-         handLabelName = tempButton.getIcon().toString();
-         playedLabelName = playedCardLabels[1].getIcon().toString();
-         if (handLabelName == playedLabelName)
-         {
-            myCardTable.pnlHumanHand.remove(i);
-         }
-      }*/
    }
- /*  
-   private static void removePlayedCardsFromHands()
-   {
-      Card tempCard = getCardFromPlayer(0);
-      JLabel tempLabel;
-      String handLabelName = "", playedLabelName = "";
-      //for the computer's hand
-      for (int i = 0; i < myCardTable.pnlComputerHand.getComponentCount(); i++)
-      {
-         tempLabel = (JLabel)myCardTable.pnlComputerHand.getComponent(i);
-         handLabelName = tempLabel.getIcon().toString();
-         playedLabelName = playedCardLabels[0].getIcon().toString();
-         if (handLabelName == playedLabelName)
-         {
-            myCardTable.pnlComputerHand.remove(i);
-         }
-      }
-      
-      CardButton tempButton;
-      //for the player's hand
-      for (int i = 0; i < myCardTable.pnlHumanHand.getComponentCount(); i++)
-      {
-         tempButton = (CardButton)myCardTable.pnlHumanHand.getComponent(i);
-         handLabelName = tempButton.getIcon().toString();
-         playedLabelName = playedCardLabels[1].getIcon().toString();
-         if (handLabelName == playedLabelName)
-         {
-            myCardTable.pnlHumanHand.remove(i);
-         }
-      }
-   }
-*/
 
    private static void resetPlayArea()
    {
@@ -353,6 +285,7 @@ public class Phase3
       myCardTable.pnlMsgArea.add(nextRoundBtn);
    }
    
+   @SuppressWarnings("serial")
    public static class CardButton extends JButton implements ActionListener
    {
       public CardButton(Icon icon)

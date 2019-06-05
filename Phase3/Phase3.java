@@ -1,5 +1,3 @@
-package assig5;
-
 /* Team 1
 
  * Austin Ah Loo
@@ -20,27 +18,27 @@ import javax.swing.border.*;
 
 public class Phase3
 {
-   static CardTable myCardTable;
-   static CardGameFramework highCardGame;
-   static Hand[] cardStacks = new Hand[2];
-   static final int NUM_CARDS_PER_HAND = 7;
-   static final int NUM_PLAYERS = 2;
-   static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
-   static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];  
-   static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
-   static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
-   static Card[] winnings = new Card[cardStacks.length * 52];
-   static int numTimesWon = 0;
-   static boolean readyToPlayCard = true;
+   public static CardTable myCardTable;
+   public static CardGameFramework highCardGame;
+   public static Hand[] cardStacks = new Hand[2];
+   public static final int NUM_CARDS_PER_HAND = 7;
+   public static final int NUM_PLAYERS = 2;
+   public static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
+   public static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND];
+   public static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS];
+   public static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
+   public static Card[] winnings = new Card[cardStacks.length * 52];
+   public static int numTimesWon = 0;
+   public static boolean readyToPlayCard = true;
    
    // static for the card icons and their corresponding labels
-   static final char[] CARD_NUMBERS = new char[]
+   public static final char[] CARD_NUMBERS = new char[]
    { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X' };
-   static final char[] SUITS = new char[]
+   public static final char[] SUITS = new char[]
    { 'C', 'D', 'H', 'S' };
-   static final int NUM_CARD_IMAGES = (CARD_NUMBERS.length * SUITS.length) + 1;
+   public static final int NUM_CARD_IMAGES = (CARD_NUMBERS.length * SUITS.length) + 1;
    // + 1 for back card
-   static Icon[] icon = new ImageIcon[NUM_CARD_IMAGES];
+   public static Icon[] icon = new ImageIcon[NUM_CARD_IMAGES];
    
    
    public static void main(String[] args)
@@ -91,21 +89,15 @@ public class Phase3
             playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
          
          if( k == 1 )
-            playLabelText[k] = new JLabel("You", JLabel.CENTER);
-               
+            playLabelText[k] = new JLabel("You", JLabel.CENTER);    
        }
 
-      // ADD LABELS AND BUTTONS TO PANELS -----------------------------------------
+      // ADD LABELS AND BUTTONS TO PANELS -------------------------------------
       for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
       {
          myCardTable.pnlComputerHand.add(computerLabels[k]);
          myCardTable.pnlHumanHand.add(new CardButton(humanLabels[k].getIcon()));
       }
-     
-      /*// adding labels to the PA panel under the cards
-      myCardTable.pnlPlayArea.add(playLabelText[0]);
-      myCardTable.pnlPlayArea.add(playLabelText[1]);
-      */
       resetPlayArea();
       
       // show everything to the user 
@@ -132,6 +124,7 @@ public class Phase3
       //this needs logic made to shift from generateRandomCard() to selecting
       //a card from the computer hand and adding it to playedCardLabels[0]
       playedCardLabels[0] = new JLabel(GUICard.getIcon(generateRandomCard()));
+      
    }
    
    private static int didHumanWin()
@@ -170,7 +163,6 @@ public class Phase3
          case 1: return "You Win!";
          default: return "NO WINNER - ERROR";
       }
-      
    }
    
    private static Card getCardFromPlayer(int playerIndex)
@@ -238,7 +230,7 @@ public class Phase3
    private static void resetPlayArea()
    {
       myCardTable.pnlPlayArea.removeAll();
-   // adding labels to the PA panel under the cards
+      // adding labels to the PA panel under the cards
       myCardTable.pnlPlayArea.add(playLabelText[0]);
       myCardTable.pnlPlayArea.add(playLabelText[1]);
    }
@@ -299,15 +291,7 @@ public class Phase3
          }
       }
    }
-   /*
-   public static class EndingListener implements ActionListener
-   {
-      public void actionPerformed(ActionEvent e)
-      {
-         System.exit(0);
-      }
-   }
-   */
+
    public static Card generateRandomCard()
    {
       char value;
@@ -323,60 +307,7 @@ public class Phase3
       Card newCard = new Card( value, suit );
       return newCard;
    }
-/*
-   public static void buildPanels()
-   {
-      int k;
-      Icon tempIcon;
 
-      for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
-      {
-         computerLabels[k] = new JLabel(GUICard.getBackCardIcon());
-              
-         tempIcon = GUICard.getIcon(highCardGame.getHand(1).inspectCard(k));
-            
-         humanLabels[k] = new JLabel(tempIcon);
-      }
-
-      for ( k = 0; k < NUM_PLAYERS; k++ )
-      {
-         if( k == 0 )
-            playLabelText[k] = new JLabel("Computer", JLabel.CENTER);
-         
-         if( k == 1 )
-            playLabelText[k] = new JLabel("You", JLabel.CENTER);
-               
-       }
-
-      // ADD LABELS TO PANELS -----------------------------------------
-      for ( k = 0; k < NUM_CARDS_PER_HAND; k++ )
-      {
-         myCardTable.pnlComputerHand.add(computerLabels[k]);
-         myCardTable.pnlHumanHand.add(humanLabels[k]);
-      }
-      
-      // and two random cards in the play region (simulating a computer/hum ply)
-      for( k = 0; k < NUM_PLAYERS; k++ )
-      {
-         playedCardLabels[k] = new JLabel( GUICard.getIcon(
-               generateRandomCard()) );
-      }
-           
-      // adding cards to the play area panel
-      for( k = 0; k < NUM_PLAYERS; k++ )
-      {
-         myCardTable.pnlPlayArea.add(playedCardLabels[k]);
-      }
-           
-      // adding lables to the PA panel under the cards
-      myCardTable.pnlPlayArea.add(playLabelText[0]);
-      myCardTable.pnlPlayArea.add(playLabelText[1]);
-      
-      // show everything to the user
-      myCardTable.setVisible(true);
-      
-   }
-*/
    public static class Card
    {
       private static final char DEFAULT_VALUE = 'A';
